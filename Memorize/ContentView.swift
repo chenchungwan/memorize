@@ -7,21 +7,27 @@
 
 import SwiftUI
 
+
+
 struct ContentView: View {
     let columns = [
+        GridItem(.flexible()),
         GridItem(.flexible()),
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
     
+    let fruits = ["🍎", "🍒", "🍑", "🍇", "🍉","🥭","🍍","🫐"]
+    
+    
     var body: some View {
         LazyVGrid(columns: columns, spacing: 5) {
-            CardView(isFaceUp: false, character: "🤣")
-            CardView(isFaceUp: true, character: "🤣")
-            CardView(isFaceUp: false, character: "🤣")
-            CardView(isFaceUp: true, character: "🤣")
+            ForEach(fruits, id: \.self) { fruit in
+                CardView(character: fruit)
+            }
         }
         .padding()
+        .foregroundColor(.green)
     }
 }
 
@@ -30,21 +36,28 @@ struct ContentView: View {
 
 
 struct CardView: View {
-    var isFaceUp: Bool
+    @State var isFaceUp = false
     var character: String
+    
     var body: some View {
         ZStack {
+            let baseSahpe = RoundedRectangle(cornerRadius: 10)
+            var opacity: Double { isFaceUp ? 1 : 0 }
+            
             if isFaceUp {
-                RoundedRectangle(cornerRadius: 10).foregroundColor(.white)
-                RoundedRectangle(cornerRadius: 10).strokeBorder(lineWidth: 1)
-                Text(character).font(.largeTitle).padding()
+                baseSahpe.fill(.white)
+                baseSahpe.strokeBorder(lineWidth: 1)
             } else {
-                RoundedRectangle(cornerRadius: 10)
+                baseSahpe.fill()
             }
+            
+            Text(character).font(.largeTitle).padding().opacity(opacity)
+            
         }
-        .foregroundColor(.blue)
+        .onTapGesture { self.isFaceUp.toggle()}
     }
 }
+
 
 
 
