@@ -57,7 +57,7 @@ struct ContentView: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 5) {
             ForEach(0..<cardCount, id: \.self) { index in
                 CardView(character: emojis[index])
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(2/3, contentMode: .fit)
             }
         }.padding().foregroundColor(themeColor)
     }
@@ -79,13 +79,6 @@ struct ContentView: View {
         .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
     }
     
-    func randomInt(from range: ClosedRange<Int>) -> Int {
-        return Int.random(in: range)
-    }
-    
-    func randomInt(from min: Int, to max: Int) -> Int {
-        return Int.random(in: min...max)
-    }
     
     func themeChooser() -> some View {
         HStack {
@@ -113,23 +106,16 @@ struct ContentView: View {
 
 
 struct CardView: View {
-    @State var isFaceUp = true
-    var character: String
+    let character: String
+    @State var isFaceUp = false
+  
     
     var body: some View {
         ZStack {
             let baseShape = RoundedRectangle(cornerRadius: 10)
-            var opacity: Double { isFaceUp ? 1 : 0 }
-            
-            if isFaceUp {
-                baseShape.fill(.white)
-                baseShape.strokeBorder(lineWidth: 1)
-            } else {
-                baseShape.fill()
-            }
-            
-            Text(character).font(.largeTitle).padding().opacity(opacity)
-            
+            baseShape.strokeBorder(lineWidth: 2)
+            Text(character).font(.largeTitle)
+            baseShape.fill().opacity(isFaceUp ? 1 : 0)
         }
         .onTapGesture { self.isFaceUp.toggle()}
     }
