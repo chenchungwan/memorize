@@ -32,41 +32,48 @@ struct ContentView: View {
         var twoPairs:[String] = []
         switch theme {
         case "fruits":
-                self.cardCount = Int.random(in: 1...fruits.count)
+                self.cardCount = Int.random(in: 2...fruits.count)
                 twoPairs = Array(fruits[0..<cardCount])
         case "cars":
-            self.cardCount = Int.random(in: 1...cars.count)
+            self.cardCount = Int.random(in: 2...cars.count)
             twoPairs = Array(cars[0..<cardCount])
         case "animals":
-            self.cardCount = Int.random(in: 1...animals.count)
+            self.cardCount = Int.random(in: 2...animals.count)
             twoPairs = Array(animals[0..<cardCount])
         default:
-            self.cardCount = Int.random(in: 1...fruits.count)
+            self.cardCount = Int.random(in: 2...fruits.count)
             twoPairs = Array(fruits[0..<cardCount])
         }
         twoPairs += twoPairs
         return twoPairs.shuffled()
     }
     
+    
+    
     var body: some View {
-        VStack {
-            Text("Memorize").font(.largeTitle).fontWeight(.bold).foregroundColor(.red)
-            ScrollView {
-                cards()
+            VStack {
+                Text("Memorize").font(.largeTitle).fontWeight(.bold).foregroundColor(.red)
+                ScrollView {
+                    cards()
+                }
+                Spacer()
+                themeChooser()
+                //            buttons()
             }
-            Spacer()
-            themeChooser()
-//            buttons()
-        }
+        
     }
     
     func cards() -> some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 5) {
-            ForEach(0..<emojis.count, id: \.self) { index in
-                CardView(character: emojis[index])
-                    .aspectRatio(2/3, contentMode: .fit)
-            }
-        }.padding().foregroundColor(themeColor)
+        GeometryReader { geometry in  // 📏 Get screen dimensions
+            let screenWidth = geometry.size.width
+            let minimumCardWith = screenWidth < 600 ? 80 :  screenWidth/6
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: minimumCardWith))], spacing: 5) {
+                ForEach(0..<emojis.count, id: \.self) { index in
+                    CardView(character: emojis[index])
+                        .aspectRatio(2/3, contentMode: .fit)
+                }
+            }.padding().foregroundColor(themeColor)
+        }
     }
     
     func getThemeButton(themeName: String, symbol: String) -> some View {
